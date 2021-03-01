@@ -1,0 +1,63 @@
+---
+
+- name: Instalar paquete nfs-utils
+  dnf:
+    name: nfs-utils
+    state: latest
+  become: yes
+
+- name: Instalar paquete net-tools
+  dnf:
+    name: net-tools
+    state: latest
+  become: yes
+
+- name: Habilitar e iniciar nfs-server
+  systemd: 
+    name: nfs-server
+    state: started
+    enabled: yes
+    masked: no
+  become: yes
+
+- name: Crear directorio /srv/nfs
+  file: 
+    path: /srv/nfs
+    state: directory
+  become: yes
+
+- name: Crear fichero /etc/exports
+  copy:
+    dest: "/etc/exports"
+    content: |
+      /srv/nfs {{ ip_master }}
+      /srv/nfs {{ ip_worker01 }}
+      /srv/nfs {{ ip_worker02 }}
+  become: yes
+
+- name: Configurar los exports exportfs -r
+  command: exportfs -r
+
+- name: Configurar los exports exportfs -s
+  command: exportfs -s
+
+- name: Apertura de puertos para el servicio nfs sea accesible 
+  firewalld:
+    service: nfs
+    permanent: true
+    state: enabled
+
+- name: Apertura de puertos para el servicio rpc-bind sea accesible
+  firewalld:
+    service: rpc-bind
+    permanent: true
+    state: enabled
+
+- name: Apertura de puertos para el servicio mountd sea accesible
+  firewalld:
+    service: mountd
+    permanent: true
+    state: enabled
+
+- name: Reiniciar firewall
+  command: firewall-cmd --reload

@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jenkins-ingress
+  namespace: jenkins
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  rules:
+  - host: jenkins.xn--danieljsaldaa-tkb.com
+    http:
+      paths:
+      - path: /
+        backend: 
+          serviceName: jenkins
+          servicePort: 8080
+  tls:
+    - hosts:
+      - jenkins.xn--danieljsaldaa-tkb.com
+      secretName: jenkins-tls

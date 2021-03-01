@@ -1,2 +1,2 @@
-# practico-2
+# practica2
  

@@ -1,0 +1,7 @@
+---
+
+- name: Despliegue de microservicio NFS
+  hosts: nfs
+  gather_facts: false
+  roles:
+    - { role: deploy-nfs, become: yes }

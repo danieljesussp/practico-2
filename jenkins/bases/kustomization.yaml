@@ -1,0 +1,4 @@
+bases:
+- ./frontend
+- ./namespace
+- ./storage

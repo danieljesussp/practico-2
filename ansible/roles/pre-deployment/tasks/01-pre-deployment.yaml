@@ -1,0 +1,42 @@
+---
+
+- name: Definir zona horaria
+  command: timedatectl set-timezone Europe/Madrid
+
+- name: Instalar chrony
+  dnf:
+    name: chrony
+    state: latest
+  become: yes
+
+- name: Habilitar e iniciar chronyd
+  systemd: 
+    name: chronyd
+    state: started
+    enabled: yes
+    masked: no
+  become: yes
+
+- name: Habilitar ntp
+  command: timedatectl set-ntp true
+
+- name: Desactivar SELinux
+  command: sed -i s/=enforcing/=disabled/g /etc/selinux/config
+
+- name: Instalar paquete nfs-utils
+  dnf:
+    name: nfs-utils
+    state: latest
+  become: yes
+
+- name: Instalar paquete nfs4-acl-tools
+  dnf:
+    name: nfs4-acl-tools
+    state: latest
+  become: yes
+
+- name: Instalar paquete wget
+  dnf:
+    name: wget
+    state: latest
+  become: yes

@@ -1,0 +1,41 @@
+---
+
+- name: Instalar epel-release
+  command: yum install epel-release
+  become: true
+
+- name: Instalar snapd
+  command: sudo yum install snapd
+  become: true
+
+- name: Habilitar snapd
+  command: systemctl enable --now snapd.socket
+  become: true
+
+- name: Creamos enlace simbolico
+  command: ln -s /var/lib/snapd/snap /snap
+  become: true      
+
+- name: Instalamos Helm
+  command: snap install helm --classic
+  become: true  
+
+- name: Añadimos el repo de Helm
+  command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  become: true  
+
+- name: Actulizamos los repositorios de Helm
+  command: helm repo update
+  become: true  
+
+- name: Buscamos en los repositorios estables
+  command: helm search repo stable
+  become: true
+
+- name: Desplegamos
+  command: helm install nfs stable/nfs-server-provisioner --set persistence.enabled=true,persistence.storageClass=do-block-storage,persistence.size=40Gi
+  become: true
+
+- name: Crear namespace de nfs
+  command: kubectl create namespace nfs
+  become: true
